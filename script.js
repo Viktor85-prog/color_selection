@@ -15,17 +15,40 @@ function setRandomColors() {
 		// let color = generateRandomColor();
 		let color = chroma.random();
 		testBlock = col.querySelector('h2');
+		btn = col.querySelector('button');
 
 		col.style.background = color;
 		testBlock.textContent = color;
 
 		setTextColor(testBlock, color);
+		setTextColor(btn, color);
 	});
 }
-
 
 function setTextColor(text, color) {
 	let luminance = chroma(color).luminance();
 	text.style.color = luminance>0.5 ?'black':'white'
 }
 setRandomColors();
+
+document.addEventListener('keydown', (event => {
+	event.preventDefault()
+	if (event.code.toLocaleLowerCase() === 'space') {
+		setRandomColors();
+	}
+}))
+
+
+document.addEventListener('click', event=> {
+	const type = event.target.dataset.type;
+	const target = event.target;
+	const tagName = event.target.tagName;
+	const className = event.target.className;
+	if (className === 'material-symbols-outlined') {
+		if (target.textContent === 'lock') {
+			target.textContent = 'lock_open';
+		} else {
+			target.textContent = 'lock';
+		}	
+	}
+})
