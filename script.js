@@ -14,9 +14,18 @@ function setRandomColors() {
 	cols.forEach(col=> {
 		// let color = generateRandomColor();
 		let color = chroma.random();
+		testBlock = col.querySelector('h2');
+
 		col.style.background = color;
-		col.querySelector('h2').textContent = color;
+		testBlock.textContent = color;
+
+		setTextColor(testBlock, color);
 	});
 }
 
-setRandomColors()
+
+function setTextColor(text, color) {
+	let luminance = chroma(color).luminance();
+	text.style.color = luminance>0.5 ?'black':'white'
+}
+setRandomColors();
