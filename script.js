@@ -12,14 +12,19 @@ function generateRandomColor() {
 
 function setRandomColors() {
 	cols.forEach(col=> {
-		// let color = generateRandomColor();
+		const isLocked = col.querySelector('span').textContent  === 'lock';
+
+		if (isLocked) {
+			return
+		}
+
 		let color = chroma.random();
 		testBlock = col.querySelector('h2');
 		btn = col.querySelector('button');
-
+		
 		col.style.background = color;
 		testBlock.textContent = color;
-
+		
 		setTextColor(testBlock, color);
 		setTextColor(btn, color);
 	});
@@ -51,4 +56,12 @@ document.addEventListener('click', event=> {
 			target.textContent = 'lock';
 		}	
 	}
+
+	if(type === 'copy') {
+		copyToClickBoard(target.textContent)
+	}
 })
+
+function copyToClickBoard(text) {
+	return navigator.clipboard.writeText(text);
+}
