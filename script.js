@@ -10,31 +10,42 @@ function generateRandomColor() {
 	return '#' + color
 }
 
-function setRandomColors() {
-	cols.forEach(col=> {
+function setRandomColors(isInitial) {
+	const colors = isInitial ? getColorsFromHash():[];
+	cols.forEach((col, index)=> {
 		const isLocked = col.querySelector('span').textContent  === 'lock';
-
-		if (isLocked) {
-			return
-		}
-
-		let color = chroma.random();
 		testBlock = col.querySelector('h2');
 		btn = col.querySelector('button');
 		
+		if (isLocked) {
+			colors.push(testBlock.textContent)
+			return
+		}
+		
+		let color = isInitial 
+			? colors[index]
+				? colors[index]
+				:chroma.random() 
+			:chroma.random();
+		
+		if (!isInitial ) {
+			colors.push(color)
+		}
 		col.style.background = color;
 		testBlock.textContent = color;
 		
 		setTextColor(testBlock, color);
 		setTextColor(btn, color);
 	});
+	if (!isInitial ) {
+	updateColorsHash(colors)
+	}
 }
 
 function setTextColor(text, color) {
 	let luminance = chroma(color).luminance();
 	text.style.color = luminance>0.5 ?'black':'white'
 }
-setRandomColors();
 
 document.addEventListener('keydown', (event => {
 	event.preventDefault()
@@ -65,3 +76,20 @@ document.addEventListener('click', event=> {
 function copyToClickBoard(text) {
 	return navigator.clipboard.writeText(text);
 }
+
+function updateColorsHash(colors=[]) {
+	document.location.hash = colors.map(col => {
+		return col.toString().substring(1)
+	})
+	.join('-')
+}
+
+function getColorsFromHash() {
+	let hash = document.location.hash;
+	if(hash.length > 1) {
+		return	hash.substring(1).split('-').map(color=> '#' + color)
+	}
+	return []
+}
+
+setRandomColors(true);
